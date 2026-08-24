@@ -1,18 +1,15 @@
 chat:
-  provider: openai
-  model: gpt-4o
+  provider: google
+  model: gemini-3.5-flash
   params:
     temperature: 1.1
-    max_completion_tokens: 250
-    top_p: 0.85
-    presence_penalty: 0.2
-    frequency_penalty: 0.2
+    top_p: 0.9
   limits:
     rpd: 0
     tpd: 0
 analytics:
   provider: google
-  model: gemini-3.5-flash
+  model: gemini-3.5-flash-lite
 proactivity:
-  provider: openai
-  model: gpt-4o
+  provider: google
+  model: gemini-3.5-flash
