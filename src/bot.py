@@ -151,6 +151,7 @@ async def handle_command(message: TelegramMessage) -> None:
         session_client.clear(chat_id)
         response = "Session cleared."
     elif command == "/get_prompt":
+        session_client.set_user(chat_id, message.user())
         file_content = await build_system_prompt(chat_id)
         file_name = f"prompt-{ts}.txt"
     elif command == "/get_chat_id":
