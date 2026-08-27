@@ -308,6 +308,7 @@ class ModelClient:
             "user": user,
             "user_facts": user_facts,
             "user_emotional_state": user_emotional_state,
+            "persona_datetime": persona_dt,
             "persona_now": persona_now,
             "persona_weekday": persona_weekday,
             "persona_weather": persona_weather,
