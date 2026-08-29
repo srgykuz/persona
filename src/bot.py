@@ -94,7 +94,7 @@ async def handle_command(message: TelegramMessage) -> None:
         parts = text.split(maxsplit=1)
 
         if len(parts) < 2 or not parts[1].strip():
-            response = "Usage: `/set_persona <id>`"
+            response = "Usage: /set\\_persona <id>"
         else:
             persona_id = parts[1].strip()
             persona: Optional[Persona] = None
@@ -137,15 +137,15 @@ async def handle_command(message: TelegramMessage) -> None:
         emotional_state = session_client.get_emotional_state(chat_id)
 
         if emotional_state:
-            file_content = emotional_state.model_dump_json(indent=2)
-            file_name = f"emotional_state-{ts}.txt"
+            dump = emotional_state.model_dump_json(indent=2)
+            response = f"`{dump}`"
         else:
             response = "No emotional state is currently stored for this chat."
     elif command == "/set_emotional_state":
         parts = text.split(maxsplit=2)
 
         if len(parts) < 3:
-            response = "Usage: `/set_emotional_state <key> <value>`"
+            response = "Usage: /set\\_emotional\\_state <key> <value>"
         else:
             key = parts[1].strip()
             value = parts[2].strip()
@@ -188,15 +188,15 @@ async def handle_command(message: TelegramMessage) -> None:
         relationships = session_client.get_relationships(chat_id)
 
         if relationships:
-            file_content = relationships.model_dump_json(indent=2)
-            file_name = f"relationships-{ts}.txt"
+            dump = relationships.model_dump_json(indent=2)
+            response = f"`{dump}`"
         else:
             response = "No relationships are currently stored for this chat."
     elif command == "/set_relationships":
         parts = text.split(maxsplit=2)
 
         if len(parts) < 3:
-            response = "Usage: `/set_relationships <key> <value>`"
+            response = "Usage: /set\\_relationships <key> <value>"
         else:
             key = parts[1].strip()
             value = 0
@@ -240,13 +240,13 @@ async def handle_command(message: TelegramMessage) -> None:
             "\n"
             "*Data commands:*\n"
             "/get\\_prompt\n"
+            "/get\\_history\n"
+            "/get\\_conversation\\_summary\n"
             "/get\\_facts\n"
             "/get\\_emotional\\_state\n"
             "/set\\_emotional\\_state <key> <value>\n"
-            "/get\\_conversation\\_summary\n"
             "/get\\_relationships\n"
             "/set\\_relationships <key> <value>\n"
-            "/get\\_history\n"
             "\n"
             "*Session commands:*\n"
             "/get\\_chat\\_id\n"
