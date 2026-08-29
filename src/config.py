@@ -70,6 +70,10 @@ class Settings(BaseSettings):
         description="Redis connection URL.",
     )
 
+    default_persona: str = Field(
+        default="",
+        description="ID of persona to set after an initial message. If empty, then a random one is selected.",
+    )
     history_limit: int = Field(
         default=50,
         description="Maximum number of recent messages to keep in chat history per user.",

@@ -253,7 +253,7 @@ class SessionClient:
         if existing_persona is not None:
             return existing_persona
 
-        new_persona = self.select_persona()
+        new_persona = self.select_persona(self.settings.default_persona)
         self.set_persona(chat_id, new_persona)
 
         return new_persona
