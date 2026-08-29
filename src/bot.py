@@ -17,7 +17,18 @@ from src.weather import (
 )
 from src.telegram import TelegramClient, TelegramMessage, parse_update
 from src.config import get_logger, get_settings, get_queue
-from src.schema import Message, MessageRole, Persona, Tool, User
+from src.schema import (
+    Message,
+    MessageRole,
+    Persona,
+    Tool,
+    User,
+    Relationships,
+    EmotionalState,
+    Mood,
+    Tone,
+    Engagement,
+)
 from src import analytics
 from src import proactivity
 from src import limiter
@@ -130,6 +141,41 @@ async def handle_command(message: TelegramMessage) -> None:
             file_name = f"emotional_state-{ts}.txt"
         else:
             response = "No emotional state is currently stored for this chat."
+    elif command == "/set_emotional_state":
+        parts = text.split(maxsplit=2)
+
+        if len(parts) < 3:
+            response = "Usage: `/set_emotional_state <key> <value>`"
+        else:
+            key = parts[1].strip()
+            value = parts[2].strip()
+            state = session_client.get_emotional_state(chat_id)
+
+            if not state:
+                state = EmotionalState(
+                    mood=Mood.CHEERFUL,
+                    tone=Tone.NEUTRAL,
+                    engagement=Engagement.NORMAL,
+                    mood_confidence=1.0,
+                    tone_confidence=1.0,
+                    engagement_confidence=1.0,
+                )
+
+            if hasattr(state, key):
+                val = getattr(state, key)
+                cls = val.__class__
+                expires = timedelta(hours=1)
+
+                try:
+                    val = cls(value)
+                except ValueError:
+                    pass
+
+                setattr(state, key, val)
+                session_client.set_emotional_state(chat_id, state, expires)
+                response = f"Emotional state key `{key}` set to value `{val}`."
+            else:
+                response = f"Emotional state key `{key}` not found."
     elif command == "/get_conversation_summary":
         conversation_summary = session_client.get_conversation_summary(chat_id)
 
@@ -146,6 +192,35 @@ async def handle_command(message: TelegramMessage) -> None:
             file_name = f"relationships-{ts}.txt"
         else:
             response = "No relationships are currently stored for this chat."
+    elif command == "/set_relationships":
+        parts = text.split(maxsplit=2)
+
+        if len(parts) < 3:
+            response = "Usage: `/set_relationships <key> <value>`"
+        else:
+            key = parts[1].strip()
+            value = 0
+
+            try:
+                value = int(parts[2].strip())
+            except ValueError:
+                pass
+
+            relationships = session_client.get_relationships(chat_id)
+
+            if not relationships:
+                relationships = Relationships(
+                    friendship=0,
+                    trust=0,
+                    romance=0,
+                )
+
+            if hasattr(relationships, key):
+                setattr(relationships, key, value)
+                session_client.set_relationships(chat_id, relationships)
+                response = f"Relationships key `{key}` set to value `{value}`."
+            else:
+                response = f"Relationships key `{key}` not found."
     elif command == "/clear_session":
         enqueue_proactivity_clear(chat_id)
         session_client.clear(chat_id)
@@ -167,8 +242,10 @@ async def handle_command(message: TelegramMessage) -> None:
             "/get\\_prompt\n"
             "/get\\_facts\n"
             "/get\\_emotional\\_state\n"
+            "/set\\_emotional\\_state <key> <value>\n"
             "/get\\_conversation\\_summary\n"
             "/get\\_relationships\n"
+            "/set\\_relationships <key> <value>\n"
             "/get\\_history\n"
             "\n"
             "*Session commands:*\n"
