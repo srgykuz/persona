@@ -172,8 +172,18 @@ async def handle_command(message: TelegramMessage) -> None:
                     pass
 
                 setattr(state, key, val)
-                session_client.set_emotional_state(chat_id, state, expires)
-                response = f"Emotional state key `{key}` set to value `{val}`."
+                valid = True
+
+                try:
+                    EmotionalState.model_validate(state.model_dump())
+                except Exception:
+                    valid = False
+
+                if valid:
+                    session_client.set_emotional_state(chat_id, state, expires)
+                    response = f"Emotional state key `{key}` set to value `{val}`."
+                else:
+                    response = f"Emotional state key `{key}` and value `{val}` are invalid."
             else:
                 response = f"Emotional state key `{key}` not found."
     elif command == "/get_conversation_summary":
@@ -217,8 +227,18 @@ async def handle_command(message: TelegramMessage) -> None:
 
             if hasattr(relationships, key):
                 setattr(relationships, key, value)
-                session_client.set_relationships(chat_id, relationships)
-                response = f"Relationships key `{key}` set to value `{value}`."
+                valid = True
+
+                try:
+                    Relationships.model_validate(relationships.model_dump())
+                except Exception:
+                    valid = False
+
+                if valid:
+                    session_client.set_relationships(chat_id, relationships)
+                    response = f"Relationships key `{key}` set to value `{value}`."
+                else:
+                    response = f"Relationships key `{key}` and value `{value}` are invalid."
             else:
                 response = f"Relationships key `{key}` not found."
     elif command == "/clear_session":
