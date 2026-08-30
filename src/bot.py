@@ -241,7 +241,7 @@ async def handle_command(message: TelegramMessage) -> None:
                     response = f"Relationships key `{key}` and value `{value}` are invalid."
             else:
                 response = f"Relationships key `{key}` not found."
-    elif command == "/clear_session":
+    elif command == "/delete" or command == "/clear_session":
         enqueue_proactivity_clear(chat_id)
         session_client.clear(chat_id)
         response = "Session cleared."
