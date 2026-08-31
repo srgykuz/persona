@@ -1,7 +1,7 @@
-id: lera
-timezone: Europe/Moscow
-city: Moscow
-language: ru
+id: emily
+timezone: America/New_York
+city: New York
+language: en
 sleep_from: 23
 sleep_to: 8
 typing_speed: 17
