@@ -128,6 +128,11 @@ class Settings(BaseSettings):
         description="Maximum number of LLM tokens usage (input + output) per chat allowed per day.",
     )
 
+    code_url: str = Field(
+        default="",
+        description="Link to the source code that will be displayed in the help message."
+    )
+
 
 def configure_logger() -> None:
     """Configures global logger settings. Should be called once at startup."""

@@ -106,7 +106,7 @@ async def handle_command(message: TelegramMessage) -> None:
 
             if persona:
                 session_client.set_persona(chat_id, persona)
-                response = f"Persona set to `{persona.id}`."
+                response = f"Persona set to `{persona.id}`. Clear the session to start over."
             else:
                 response = f"Persona `{persona_id}` not found."
     elif command == "/list_persona":
@@ -244,7 +244,7 @@ async def handle_command(message: TelegramMessage) -> None:
     elif command == "/delete" or command == "/clear_session":
         enqueue_proactivity_clear(chat_id)
         session_client.clear(chat_id)
-        response = "Session cleared."
+        response = "Chat session cleared. All your data is deleted."
     elif command == "/get_prompt":
         session_client.set_user(chat_id, message.user())
         file_content = await build_system_prompt(chat_id)
@@ -253,6 +253,17 @@ async def handle_command(message: TelegramMessage) -> None:
         response = f"`{chat_id}`"
     else:
         response = (
+            "It is your AI friend. Simply send a hello to start chatting. "
+            "Choose from various personalities, chat every day, build a relationship.\n"
+        )
+
+        if settings.code_url:
+            response += (
+                f"\nSource code available [here]({settings.code_url}).\n"
+            )
+
+        response += (
+            "\n"
             "*Persona commands:*\n"
             "/get\\_persona\n"
             "/set\\_persona <id>\n"
