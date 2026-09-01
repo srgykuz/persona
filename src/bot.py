@@ -462,6 +462,12 @@ async def build_system_prompt(chat_id: int) -> str:
     if not user:
         raise Exception("User is not set.")
 
+    persona = session_client.get_persona(chat_id)
+
+    if not persona:
+        persona = session_client.select_persona(settings.default_persona)
+        session_client.set_persona(chat_id, persona)
+
     relationships = session_client.get_relationships(chat_id)
 
     if not relationships:
@@ -472,7 +478,6 @@ async def build_system_prompt(chat_id: int) -> str:
         )
         session_client.set_relationships(chat_id, relationships)
 
-    persona = session_client.init_persona(chat_id)
     user_facts = session_client.get_facts(chat_id)
     user_emotional_state = session_client.get_emotional_state(chat_id)
     conversation_summary = session_client.get_conversation_summary(chat_id)

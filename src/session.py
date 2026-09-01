@@ -241,23 +241,6 @@ class SessionClient:
 
         return persona
 
-    def init_persona(self, chat_id: int) -> Persona:
-        """
-        Ensures that a persona is set for the given chat ID.
-        If no persona is set, a new one will be created and set.
-
-        Returns the currently set or newly created persona.
-        """
-        existing_persona = self.get_persona(chat_id)
-
-        if existing_persona is not None:
-            return existing_persona
-
-        new_persona = self.select_persona(self.settings.default_persona)
-        self.set_persona(chat_id, new_persona)
-
-        return new_persona
-
     def set_user(self, chat_id: int, user: User) -> None:
         """
         Stores the current user for the given chat ID.
