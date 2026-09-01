@@ -457,16 +457,25 @@ async def build_system_prompt(chat_id: int) -> str:
     """
     Builds system prompt for chat LLM call.
     """
-    persona = session_client.init_persona(chat_id)
     user = session_client.get_user(chat_id)
 
     if not user:
         raise Exception("User is not set.")
 
+    relationships = session_client.get_relationships(chat_id)
+
+    if not relationships:
+        relationships = Relationships(
+            friendship=0,
+            trust=0,
+            romance=0,
+        )
+        session_client.set_relationships(chat_id, relationships)
+
+    persona = session_client.init_persona(chat_id)
     user_facts = session_client.get_facts(chat_id)
     user_emotional_state = session_client.get_emotional_state(chat_id)
     conversation_summary = session_client.get_conversation_summary(chat_id)
-    relationships = session_client.get_relationships(chat_id)
     tools = build_tools()
     persona_weather: Optional[WeatherInfo] = None
 
