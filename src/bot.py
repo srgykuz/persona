@@ -106,7 +106,15 @@ async def handle_command(message: TelegramMessage) -> None:
 
             if persona:
                 session_client.set_persona(chat_id, persona)
-                response = f"Persona set to `{persona.id}`. Clear the session to start over."
+                response = f"Persona set to `{persona.id}`."
+
+                if session_client.get_history(chat_id):
+                    response += (
+                        "\n\n"
+                        "Session of the previous persona is still in effect. "
+                        "To start from scratch, clear the session first and "
+                        "then set the persona again."
+                    )
             else:
                 response = f"Persona `{persona_id}` not found."
     elif command == "/list_persona":
