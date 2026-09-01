@@ -564,5 +564,6 @@ def validate_personas():
 
     try:
         client.load_personas()
+        client.select_persona(client.settings.default_persona)
     finally:
         client.close()
