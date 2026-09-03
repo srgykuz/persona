@@ -274,15 +274,20 @@ class ModelClient:
         context = context.copy()
         context["persona_prompt"] = self.build_persona_prompt(context, persona)
 
-        system_prompt = self.load_system_prompt()
+        template = self.load_system_prompt()
+        prompt = jinja.from_string(template).render(context)
+        prompt = self.format_rendered_prompt(prompt)
 
-        return jinja.from_string(system_prompt).render(context)
+        return prompt
 
     def build_persona_prompt(self, context: Dict[str, Any], persona: Persona) -> str:
         """
         Creates a persona-only prompt by rendering the persona template.
         """
-        return jinja.from_string(persona.prompt).render(context)
+        prompt = jinja.from_string(persona.prompt).render(context)
+        prompt = self.format_rendered_prompt(prompt)
+
+        return prompt
 
     def build_prompt_context(
         self,
@@ -371,6 +376,16 @@ class ModelClient:
         content = content.replace("»", '"')
 
         return content
+
+    def format_rendered_prompt(self, prompt: str) -> str:
+        """
+        Removes redundant characters from a rendered prompt to make it
+        more readable and to save tokens.
+        """
+        prompt = prompt.strip(" \n")
+        prompt = prompt.replace("\n\n\n", "\n\n")
+
+        return prompt
 
 
 class OpenAIClient(ProviderClient):
